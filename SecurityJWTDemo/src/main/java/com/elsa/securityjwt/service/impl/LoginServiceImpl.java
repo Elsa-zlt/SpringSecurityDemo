@@ -40,13 +40,15 @@ public class LoginServiceImpl implements LoginService {
 
         // 认证通过，根据userid去生成一个jwt，jwt存入ResponseResult返回
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
-        String usrid = loginUser.getUser().getId().toString();
-        String jwt = JwtUtil.createJWT(usrid);
+        String userid = loginUser.getUser().getId().toString();
+        String jwt = JwtUtil.createJWT(userid);
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
 
         // 把用户信息存入redis，userid做完key
-        redisCache.setCacheObject("login" + usrid, loginUser);
+        redisCache.setCacheObject("login:" + userid, loginUser);
+//        System.out.println("login:" + userid);
+//        System.out.println(loginUser);
         return new ResponseResult(200, "登录成功", map);
     }
 }
